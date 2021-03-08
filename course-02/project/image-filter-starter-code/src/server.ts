@@ -31,13 +31,18 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   /**************************************************************************** */
   router.get('/filteredimage', async (req: Request, res: Response) => {
     const { imgUrl } = req.query
-    await filterImageFromURL(imgUrl)
-      .then( filteredPath => {
-        res.status(200).sendFile(filteredPath, () =>
-          deleteLocalFiles([filteredPath])
-        )
-      })
-      .catch( err => res.send(err))
+    const regex = new RegExp('((http|https)://)(www.)?' + '[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]' + '{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)' + '(.jpg|.jpeg|.png|.gif)')
+    if(regex.test(imgUrl)){
+      await filterImageFromURL(imgUrl)
+        .then( filteredPath => {
+          res.status(200).sendFile(filteredPath, () =>
+            deleteLocalFiles([filteredPath])
+          )
+        })
+        .catch( err => res.send(err))
+    } else {
+      res.send('image url is not valid')
+    }
   })
   //! END @TODO1
   
