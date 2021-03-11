@@ -30,11 +30,10 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   /**************************************************************************** */
   router.get('/filteredimage', async (req: Request, res: Response, next: any) => {
-    const { imgUrl } = req.query
-    const regex = new RegExp('((http|https)://)(www.)?' + '[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]' + '{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)' + '(.jpg|.jpeg|.png|.gif)')
-    if(regex.test(imgUrl)){
+    const { img_url } = req.query
+    if(img_url){
       try{
-        const filteredPath = await filterImageFromURL(imgUrl)
+        const filteredPath = await filterImageFromURL(img_url)
         return res.status(200).sendFile(filteredPath, () => deleteLocalFiles([filteredPath]))
       } catch (err){
         console.log(err)
